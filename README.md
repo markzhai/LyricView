@@ -12,10 +12,13 @@ Usage
 -----
 ```java
 mLyricView = (LyricView) findViewById(R.id.lyricView);
-// 
+// You can call setLyric anytime to change the lyric to another
 mLyricView.setLyric(LyricUtils.parseLyric(getResources().openRawResource(R.raw.testfile), "UTF-8"));
 mLyricView.setLyricIndex(0);
 mLyricView.play();
+
+// When you want to stop playing lyric, just call
+mLyricView.stop();
 ```
 
 ```xml
