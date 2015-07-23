@@ -11,11 +11,18 @@ This library offers a simple view that accepts lrc stream as input, and it will 
 Usage
 -----
 ```java
-pending
+        mLyricView = (LyricView) findViewById(R.id.lyricView);
+        mLyricView.setLyric(LyricUtils.parseLyric(
+                getResources().openRawResource(R.raw.testfile), "UTF-8"));
+        mLyricView.setLyricIndex(0);
+        mLyricView.play();
 ```
 
 ```xml
-pending
+    <cn.zhaiyifan.lyricview.widget.LyricView
+        android:id="@+id/lyricView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 ```
 
 Pre-requisites
