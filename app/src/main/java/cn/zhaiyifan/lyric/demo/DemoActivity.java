@@ -1,10 +1,10 @@
-package cn.zhaiyifan.lyricview.demo;
+package cn.zhaiyifan.lyric.demo;
 
 import android.app.Activity;
 import android.os.Bundle;
 
-import cn.zhaiyifan.lyricview.LyricUtils;
-import cn.zhaiyifan.lyricview.widget.LyricView;
+import cn.zhaiyifan.lyric.LyricUtils;
+import cn.zhaiyifan.lyric.widget.LyricView;
 
 public class DemoActivity extends Activity {
 

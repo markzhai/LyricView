@@ -1,10 +1,10 @@
-package cn.zhaiyifan.lyricview;
+package cn.zhaiyifan.lyric;
 
 import android.text.TextUtils;
 import android.util.Log;
 
-import cn.zhaiyifan.lyricview.model.Lyric;
-import cn.zhaiyifan.lyricview.model.Lyric.Sentence;
+import cn.zhaiyifan.lyric.model.Lyric;
+import cn.zhaiyifan.lyric.model.Lyric.Sentence;
 
 import java.io.BufferedReader;
 import java.io.File;

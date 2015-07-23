@@ -1,4 +1,4 @@
-package cn.zhaiyifan.lyricview.demo;
+package cn.zhaiyifan.lyric.demo;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

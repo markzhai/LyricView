@@ -1,4 +1,4 @@
-package cn.zhaiyifan.lyricview;
+package cn.zhaiyifan.lyric;
 
 public class Constants {
     public static final String ID_TAG_TITLE = "ti";

@@ -1,4 +1,4 @@
-package cn.zhaiyifan.lyricview.widget;
+package cn.zhaiyifan.lyric.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -15,8 +15,8 @@ import android.widget.TextView;
 import java.util.LinkedList;
 import java.util.List;
 
-import cn.zhaiyifan.lyricview.LyricUtils;
-import cn.zhaiyifan.lyricview.model.Lyric;
+import cn.zhaiyifan.lyric.LyricUtils;
+import cn.zhaiyifan.lyric.model.Lyric;
 
 /**
  * A Scrollable TextView which use lyric stream as input and display it.

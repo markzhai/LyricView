@@ -4,10 +4,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <cn.zhaiyifan.lyricview.widget.LyricView
+    <cn.zhaiyifan.lyric.widget.LyricView
         android:id="@+id/lyricView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollHorizontally="true"/>
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

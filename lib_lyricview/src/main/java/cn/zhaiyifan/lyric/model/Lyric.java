@@ -1,4 +1,4 @@
-package cn.zhaiyifan.lyricview.model;
+package cn.zhaiyifan.lyric.model;
 
 import java.util.ArrayList;
 import java.util.Comparator;
