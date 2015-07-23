@@ -1,12 +1,12 @@
 package cn.zhaiyifan.lyricview.widget;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.preference.PreferenceManager;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cn.zhaiyifan.lyricview.LyricUtils;
-import cn.zhaiyifan.lyricview.R;
 import cn.zhaiyifan.lyricview.model.Lyric;
 
 /**
@@ -24,9 +23,7 @@ import cn.zhaiyifan.lyricview.model.Lyric;
  * <p/>
  * Created by yifan on 5/13/14.
  */
-public class LyricView extends TextView {
-    private static final String TAG = LyricView.class.getSimpleName();
-
+public class LyricView extends TextView implements Runnable {
     private static final int DY = 50;
     private Lyric mLyric;
     private Paint mCurrentPaint;
@@ -37,12 +34,9 @@ public class LyricView extends TextView {
 
     private int mLyricIndex = 0;
     private int mLyricSentenceLength;
-    private boolean mTouchActionMoving = false;
     private boolean mIsNeedUpdate = false;
     private float mLastEffectY = 0;
 
-    // Use duration of current line of lyric to sleep
-    // private long currentDuringTime;
     private int mIsTouched = 0;
 
     public LyricView(Context context) {
@@ -55,10 +49,10 @@ public class LyricView extends TextView {
 
     public LyricView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
+    private void init() {
         setFocusable(true);
 
         int backgroundColor = Color.BLACK;
@@ -96,9 +90,8 @@ public class LyricView extends TextView {
             int startIndex = 0;
             int endIndex = Math.min((int) ((float) length * (width / textWidth)), length - 1);
             int perLineLength = endIndex - startIndex;
-            //Log.d(TAG, String.valueOf(endIndex));
 
-            LinkedList<String> lines = new LinkedList<String>();
+            LinkedList<String> lines = new LinkedList<>();
             lines.add(text.substring(startIndex, endIndex));
             while (endIndex < length - 1) {
                 startIndex = endIndex;
@@ -118,11 +111,11 @@ public class LyricView extends TextView {
             mPaint.setTextAlign(Paint.Align.CENTER);
             canvas.drawText(text, mMiddleX, startY, paint);
         }
-        //Log.d(TAG, "Draw line: " + line);
         return line;
     }
 
-    protected void onDraw(Canvas canvas) {
+    @Override
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         if (mLyric == null)
             return;
@@ -189,7 +182,7 @@ public class LyricView extends TextView {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         final int action = event.getActionMasked();
         final boolean superResult = super.onTouchEvent(event);
         if (mLyric == null) {
@@ -202,21 +195,18 @@ public class LyricView extends TextView {
         switch (action) {
             case MotionEvent.ACTION_MOVE:
                 mIsTouched = 3;
-                mTouchActionMoving = true;
-                if (mTouchActionMoving) {
-                    float y = event.getY();
-                    if (mLastEffectY != 0) {
-                        if (mLastEffectY - y > 10) {
-                            int times = (int) ((mLastEffectY - y) / 10);
-                            mLastEffectY = y;
-                            mLyric.offset += times * -100;
-                            offsetChanged = true;
-                        } else if (mLastEffectY - y < -10) {
-                            int times = -(int) ((mLastEffectY - y) / 10);
-                            mLastEffectY = y;
-                            mLyric.offset += times * 100;
-                            offsetChanged = true;
-                        }
+                float y = event.getY();
+                if (mLastEffectY != 0) {
+                    if (mLastEffectY - y > 10) {
+                        int times = (int) ((mLastEffectY - y) / 10);
+                        mLastEffectY = y;
+                        mLyric.offset += times * -100;
+                        offsetChanged = true;
+                    } else if (mLastEffectY - y < -10) {
+                        int times = -(int) ((mLastEffectY - y) / 10);
+                        mLastEffectY = y;
+                        mLyric.offset += times * 100;
+                        offsetChanged = true;
                     }
                 }
                 handled = true;
@@ -228,7 +218,6 @@ public class LyricView extends TextView {
                 break;
             case MotionEvent.ACTION_UP:
                 System.currentTimeMillis();
-                mTouchActionMoving = false;
                 mLastEffectY = 0;
                 handled = true;
                 break;
@@ -240,7 +229,6 @@ public class LyricView extends TextView {
             if (offsetChanged) {
                 mIsNeedUpdate = true;
             }
-            invalidate();
             return true;
         }
 
@@ -278,10 +266,6 @@ public class LyricView extends TextView {
         }
     }
 
-    public int getLyricIndex() {
-        return mLyricIndex;
-    }
-
     public void setLyricIndex(int index) {
         mLyricIndex = index;
     }
@@ -306,11 +290,54 @@ public class LyricView extends TextView {
         return false;
     }
 
-    public Lyric getLyric() {
-        return mLyric;
-    }
-
     public synchronized void setLyric(Lyric lyric) {
         setLyric(lyric, true);
+    }
+
+    public void play() {
+        mStop = false;
+        Thread thread = new Thread(this);
+        thread.start();
+    }
+
+    public void stop() {
+        mStop = true;
+    }
+
+    private long mStartTime = -1;
+    private boolean mStop = true;
+    private boolean mIsForeground = true;
+    long mNextSentenceTime = -1;
+
+    private Handler mHandler = new Handler();
+
+    @Override
+    public void run() {
+        if (mStartTime == -1) {
+            mStartTime = System.currentTimeMillis();
+        }
+
+        while (mLyricIndex != -2) {
+            if (mStop) {
+                return;
+            }
+            long ts = System.currentTimeMillis() - mStartTime;
+            if (ts >= mNextSentenceTime || checkUpdate()) {
+                mNextSentenceTime = updateIndex(ts);
+
+                // Redraw only when window is visible
+                if (mIsForeground) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            invalidate();
+                        }
+                    });
+                }
+            }
+            if (mNextSentenceTime == -1) {
+                mStop = true;
+            }
+        }
     }
 }
