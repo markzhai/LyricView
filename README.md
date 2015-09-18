@@ -10,6 +10,12 @@ This library offers a simple view that accepts lrc stream as input, and it will 
 
 Usage
 -----
+```gradle
+dependencies {
+    compile 'cn.zhaiyifan:lyricview:1.0.0'
+}
+```
+
 ```java
 mLyricView = (LyricView) findViewById(R.id.lyricView);
 // You can call setLyric anytime to change the lyric to another

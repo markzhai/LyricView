@@ -27,3 +27,6 @@ proguard/
 *.log
 
 .idea/
+/*.iml
+*.iml
+/lib_lyricview/*.iml

@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -115,7 +114,7 @@ public class LyricView extends TextView implements Runnable {
     }
 
     @Override
-    protected void onDraw(@NonNull Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mLyric == null)
             return;
@@ -182,7 +181,7 @@ public class LyricView extends TextView implements Runnable {
     }
 
     @Override
-    public boolean onTouchEvent(@NonNull MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
         final int action = event.getActionMasked();
         final boolean superResult = super.onTouchEvent(event);
         if (mLyric == null) {
