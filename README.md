@@ -12,7 +12,7 @@ Usage
 -----
 ```gradle
 dependencies {
-    compile 'cn.zhaiyifan:lyricview:1.0.0'
+    compile 'cn.zhaiyifan:lyricview:1.0.1'
 }
 ```
 
