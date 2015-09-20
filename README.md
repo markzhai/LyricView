@@ -1,4 +1,4 @@
-LyricView
+LyricView [![LyricHere App](https://img.shields.io/badge/lyrichere-2.0.0-brightgreen.svg)](https://github.com/markzhai/LyricHere/releases/download/v2.0-beta/lyric-here.apk) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/cn.zhaiyifan/lyricview/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/cn.zhaiyifan/lyricview)
 =========
 Android LyricView that accepts lrc stream as input, it is used in my project [LyricHere](https://github.com/markzhai/LyricHere).
 
